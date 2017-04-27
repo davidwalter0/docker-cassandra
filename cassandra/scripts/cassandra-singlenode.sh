@@ -16,6 +16,9 @@ sed -i -e "s/- seeds: \"127.0.0.1\"/- seeds: \"$SEEDS\"/" $CASSANDRA_CONFIG/cass
 # Listen on IP:port of the container
 sed -i -e "s/^listen_address.*/listen_address: $IP/" $CASSANDRA_CONFIG/cassandra.yaml
 
+# RPC Broadcast IP of the container
+sed -i -e "s/^# broadcast_rpc_address.*/broadcast_rpc_address: $IP/" $CASSANDRA_CONFIG/cassandra.yaml
+
 # With virtual nodes disabled, we need to manually specify the token
 echo "JVM_OPTS=\"\$JVM_OPTS -Dcassandra.initial_token=0\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 
@@ -31,4 +34,4 @@ if [ ! -z "$CASSANDRA_DC" ]; then
     echo "default=$CASSANDRA_DC:rac1" > $CASSANDRA_CONFIG/cassandra-topology.properties
 fi
 
-exec cassandra -f
+exec cassandra -f -R
